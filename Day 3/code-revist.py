@@ -13,22 +13,17 @@ def empty_trash(input):
 
 for column in range(len(diagnostic_report[0])):
 
-    # Calculates mode (static)
+    # Calculates gamma and epsilon rates by concatenating column modes/anti-modes
     column_mode = statistics.mode(line[column] for line in diagnostic_report)
-
-    # Calculates gamma and epsilon rates
     gamma_rate += "1" if column_mode == "1" else "0"
     epsilon_rate += "0" if column_mode == "1" else "1"
 
-    trash = [] # Initialises/resets trash can
-
-    # Calculates column mode based on current shortlist for Ox Gen
+    # Works out oxygen generator rating through process of elimination
     if list(line[column] for line in ox_gen_rating).count("1") == list(line[column] for line in ox_gen_rating).count("0"):
         column_mode = "1"
     else:
         column_mode = statistics.mode(line[column] for line in ox_gen_rating)
-
-    # Removes lines that don't satisfy bit criteria for C02 Scubber
+    trash = [] 
     for line in ox_gen_rating:
         if len(ox_gen_rating) == 1:
             continue
@@ -36,15 +31,12 @@ for column in range(len(diagnostic_report[0])):
             trash.append(line)
     empty_trash(ox_gen_rating)
 
-    trash = [] # Resets trash can
-
-    # Calculates mode based on current shortlist for c02 Gen
+    # Works out C02 Scrubber rating through process of elimination
     if list(line[column] for line in c02_scrub_rating).count("1") == list(line[column] for line in c02_scrub_rating).count("0"):
         column_mode = "1"
     else:
         column_mode = statistics.mode(line[column] for line in c02_scrub_rating)
-
-    # Removes lines that don't satisfy bit criteria for C02 Scubber
+    trash = []
     for line in c02_scrub_rating:
         if len(c02_scrub_rating) == 1:
             continue
